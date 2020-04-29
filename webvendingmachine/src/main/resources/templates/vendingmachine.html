@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Vending Machine</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<h1>Vending Machine</h1>
+	<form action="#" th:action="@{/vendingmachine}" method="post">  
+	<p>Message: <span id="message" th:text="${message}" /></p>		
+	<input id="makePayment" type="submit" name="actionType" value="makePayment" />  
+	<p>Payment: <span id="payment" th:text="${payment}" /></p>    	
+    <p> <input id="buyProduct" type="submit" name="actionType" value="buyProduct" /></p>
+    <input id="releaseChange" type="submit" name="actionType" value="releaseChange" /></p>
+    <p>Change: <span id="change" th:text="${change}" /></p> 
+    </form>  
+</body>
+</html>
