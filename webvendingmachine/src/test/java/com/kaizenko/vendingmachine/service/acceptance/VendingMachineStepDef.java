@@ -23,6 +23,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import com.kaizenko.vendingmachine.domain.Product;
 import com.kaizenko.vendingmachine.service.VendingMachine;
 
 import org.springframework.test.annotation.Rollback;
@@ -37,8 +38,8 @@ import io.cucumber.java.After;
 @ActiveProfiles("test")
 public class VendingMachineStepDef implements En {
 		
-	int initialAmount=0;
 	int change;
+	Product product;
 	@Autowired
 	VendingMachine vendingMachine;
 	
@@ -58,32 +59,46 @@ public class VendingMachineStepDef implements En {
 	}
 	
 	public VendingMachineStepDef() {
-		
-		When("at the {string}", (String url) -> {		   
-			initialAmount=vendingMachine.getPayment();
+		Given("I'm at a vending machine", () -> {
+		    //nothing to do since vending machine is autowired
 		});
 
-		And("I make a payment", () -> {
-			vendingMachine.makePayment();		
-		});		
+		Given("a vending machine with {int} cents", (Integer cents) -> {
+		    int numberOfQuarters=cents/25;
+		    for (int i=0;i<numberOfQuarters;i++) {
+		    	vendingMachine.makePayment();
+		    }
+		});
+
+		When("I buy a product", () -> {
+		    product=vendingMachine.makeSelection();
+		});
+
+		Then("the vending machine should not dispense a product", () -> {
+		    assertThat(product).isNull();
+		});
+
+		Then("the vending machine should dispense a product", () -> {
+		   assertThat(product).isNotNull();
+		});
+
+		When("I insert a coin", () -> {
+		    vendingMachine.makePayment();
+		});
+
+		Then("the vending machine should have a total of {int} cents", (Integer expectedPayment) -> {
+		    assertThat(vendingMachine.getPayment()).isEqualTo(expectedPayment);
+		});
 		
-		And("I release change", () -> {
+		When("I release change", () -> {
 			change=vendingMachine.releaseChange();
-		});		
+		});
 
-		Then("the amount paid is the initial amount plus {int}", (Integer payment) -> {			
-			Integer updatePayment=vendingMachine.getPayment();
-			assertThat(updatePayment).isEqualTo(initialAmount+payment);		
-		});	
-		
-		Then("the amount paid is {int}", (Integer payment) -> {			
-			Integer updatePayment=vendingMachine.getPayment();
-			assertThat(updatePayment).isEqualTo(payment);			
+		Then("the vending machine should release {int} cents", (Integer expectedChange) -> {
+			assertThat(change).isEqualTo(expectedChange);
 		});
+
 		
-		Then("the change released is {int}", (Integer change) -> {
-			assertThat(change).isEqualTo(change);	
-		});
 	}	
 	
 }

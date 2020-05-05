@@ -71,5 +71,5 @@ class PaymentDaoJdbcIntegrationTest {
     	int payment=paymentDao.retrieve();
     	assertThat(payment).isEqualTo(0);    	 
 	}
-	*/	
+		*/
 }

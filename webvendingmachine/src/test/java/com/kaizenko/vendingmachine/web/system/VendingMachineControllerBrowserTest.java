@@ -1,24 +1,14 @@
 package com.kaizenko.vendingmachine.web.system;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 
 import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -26,22 +16,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.jdbc.JdbcTestUtils;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.ModelAndView;
-
-import com.kaizenko.vendingmachine.service.VendingMachine;
 import com.kaizenko.vendingmachine.testcategory.BrowserTests;
 
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
 
 @Category(BrowserTests.class)
 @Tag("BrowserTests")
@@ -53,17 +36,17 @@ class VendingMachineControllerBrowserTest {
 	private JdbcTemplate jdbcTemplate;
 	private static WebDriver driver;
 	private URL baseUrl;
-	
+		
 	@LocalServerPort
 	int port;
 		
 	@BeforeAll
-	static void beforeAll() throws MalformedURLException {		
+	static void beforeAll() {
 		driver = new ChromeDriver();
 	}
 	
 	@BeforeEach
-	void beforeEach() throws MalformedURLException {
+	void beforeEach() throws MalformedURLException {		
 		baseUrl= new URL("http://localhost:"+port);
 		jdbcTemplate.update("update payment set amount=0 where id=1");
 	}
@@ -144,6 +127,5 @@ class VendingMachineControllerBrowserTest {
 		WebElement paymentElement =driver.findElement(By.id("change"));
 		Integer change=Integer.valueOf(paymentElement.getText());
 		assertThat(change).isEqualTo(50);
-	}
-	
+	}	
 }
